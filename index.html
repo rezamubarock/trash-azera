@@ -43,6 +43,35 @@
       </div>
     </div>
 
+    <!-- 1.5 USER LOGIN DIALOG (Windows 95 style) -->
+    <div id="login-screen" class="screen hidden">
+      <div class="login-dialog win-bevel-outset">
+        <div class="login-header">
+          <span>Enter Network Password</span>
+        </div>
+        <div class="login-body">
+          <div class="login-logo-container">
+            <div class="login-logo"></div>
+          </div>
+          <div class="login-form">
+            <p class="login-prompt">Type oca as password to unlock the OS.</p>
+            <div class="login-input-row">
+              <span class="login-label">User name:</span>
+              <input type="text" value="REZA" readonly class="retro-input login-input-disabled">
+            </div>
+            <div class="login-input-row">
+              <span class="login-label">Password:</span>
+              <input type="password" id="login-password" autofocus class="retro-input">
+            </div>
+          </div>
+        </div>
+        <div class="login-buttons">
+          <button id="btn-login-ok" class="retro-btn btn-primary">OK</button>
+          <button id="btn-login-cancel" class="retro-btn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 2. Main Desktop OS -->
     <div id="desktop-screen" class="screen hidden">
       
@@ -76,6 +105,10 @@
             <span class="shortcut-label">System Diagnostic</span>
           </div>
           
+          <div class="shortcut" data-window="win-2fa">
+            <div class="shortcut-icon icon-2fa"></div>
+            <span class="shortcut-label">2FA Authenticator</span>
+          </div>
 
         </div>
 
@@ -378,7 +411,119 @@
           </div>
         </div>
 
+        <!-- Window: 2FA Authenticator -->
+        <div id="win-2fa" class="window hidden" style="width: 520px; height: 430px; left: 20%; top: 15%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span class="win-title-icon icon-2fa-sm"></span>
+              <span>2FA Authenticator v1.0</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-min" data-action="minimize">_</button>
+              <button class="win-btn win-max" data-action="maximize">🗖</button>
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body window-split">
+            <!-- 2FA Tab headers -->
+            <div class="tab-header-row">
+              <button id="btn-2fa-tab-public" class="retro-btn tab-btn active">Umum (Public)</button>
+              <button id="btn-2fa-tab-private" class="retro-btn tab-btn">Privat (Private)</button>
+            </div>
+            
+            <!-- Tab Panel: Public -->
+            <div id="panel-2fa-public" class="tab-panel">
+              <div class="otp-actions-bar">
+                <button id="btn-add-otp-public" class="retro-btn btn-primary">+ Add Account</button>
+              </div>
+              <div class="otp-list-container" id="otp-list-public">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
 
+            <!-- Tab Panel: Private Gate (Password entry) -->
+            <div id="panel-2fa-private-gate" class="tab-panel hidden">
+              <div class="gate-container text-center" style="padding: 30px 10px;">
+                <p class="retro-label" style="margin-bottom: 10px;">Enter password to unlock Private Secrets:</p>
+                <input type="password" id="otp-private-password" class="retro-input" style="width: 200px; margin-bottom: 15px;" placeholder="Password">
+                <br>
+                <button id="btn-unlock-private" class="retro-btn btn-primary" style="width:100px;">Unlock</button>
+              </div>
+            </div>
+
+            <!-- Tab Panel: Private Content -->
+            <div id="panel-2fa-private-content" class="tab-panel hidden">
+              <div class="otp-actions-bar">
+                <button id="btn-add-otp-private" class="retro-btn btn-primary">+ Add Private Key</button>
+                <button id="btn-sync-private" class="retro-btn">🔄 Sync Sheets</button>
+                <button id="btn-config-sheets" class="retro-btn-sm" style="margin-left:auto;">⚙️ Sheets Setup</button>
+              </div>
+              <div class="otp-list-container" id="otp-list-private">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+          <div class="window-statusbar">
+            <span id="otp-status-text">TOTP Engine Active</span>
+            <span id="otp-timer-text" class="font-mono">Syncing...</span>
+          </div>
+        </div>
+
+        <!-- Dialog Window: Sheets Config -->
+        <div id="win-sheets-config" class="window hidden dialog-window" style="width: 420px; height: 260px; left: 35%; top: 30%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span>Google Sheets Sync Settings</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="tool-layout">
+              <p class="text-sm">Enter the Google Apps Script Web App URL to sync private keys.</p>
+              <div class="form-group">
+                <label class="retro-label">Apps Script URL:</label>
+                <input type="text" id="sheets-url-input" class="retro-input" placeholder="https://script.google.com/macros/s/.../exec">
+              </div>
+              <div class="note-box" style="margin: 5px 0; font-size: 10px; padding: 5px; background:#ffffe0; color:#333;">
+                Ensure you deployed the Apps Script as Web App (Access: Anyone).
+              </div>
+              <div class="action-row text-right">
+                <button id="btn-save-sheets-config" class="retro-btn btn-primary">Save Settings</button>
+                <button id="btn-cancel-sheets-config" class="retro-btn">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dialog Window: Add OTP -->
+        <div id="win-add-otp" class="window hidden dialog-window" style="width: 380px; height: 230px; left: 30%; top: 25%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span id="add-otp-title">Add 2FA Account</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="tool-layout">
+              <div class="form-group">
+                <label class="retro-label">Account Label:</label>
+                <input type="text" id="otp-add-label" class="retro-input" placeholder="e.g. Gmail (user@gmail.com)">
+              </div>
+              <div class="form-group">
+                <label class="retro-label">Secret Key (Base32):</label>
+                <input type="text" id="otp-add-secret" class="retro-input" placeholder="e.g. JBSWY3DPEHPK3PXP">
+              </div>
+              <div class="action-row text-right">
+                <button id="btn-save-new-otp" class="retro-btn btn-primary">Add Key</button>
+                <button id="btn-cancel-new-otp" class="retro-btn">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Dialog Window: API Config (Modal style) -->
         <div id="win-api-config" class="window hidden dialog-window" style="width: 420px; height: 230px; left: 35%; top: 30%;">
@@ -444,6 +589,10 @@
                 <span class="start-icon icon-specs-sm"></span>
                 <span>System Diagnostic</span>
               </div>
+              <div class="start-item" data-window="win-2fa">
+                <span class="start-icon icon-2fa-sm"></span>
+                <span>2FA Authenticator</span>
+              </div>
 
               <hr class="start-divider">
               <div class="start-item" id="start-restart">
@@ -494,6 +643,7 @@
   <!-- Main scripts -->
   <script src="js/tools.js"></script>
   <script src="js/mail.js"></script>
+  <script src="js/2fa.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

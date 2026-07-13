@@ -362,12 +362,12 @@ const BiosSimulator = {
 document.addEventListener('DOMContentLoaded', () => {
   const biosScreen = document.getElementById('bios-screen');
   const desktopScreen = document.getElementById('desktop-screen');
-  
   // Set up clocks, triggers, sounds
   initClock();
   initTheme();
   initAudioToggle();
   initStartMenu();
+  initLogin();
 
   // Initialize Window Manager
   WindowManager.init();
@@ -375,6 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Sub-Modules
   if (typeof RetroTools !== 'undefined') RetroTools.init();
   if (typeof TrashMail !== 'undefined') TrashMail.init();
+  if (typeof TwoFA !== 'undefined') TwoFA.init();
 
   // Boot Trigger
   let bootCompleted = false;
@@ -384,15 +385,21 @@ document.addEventListener('DOMContentLoaded', () => {
     bootCompleted = true;
     
     biosScreen.classList.add('hidden');
-    desktopScreen.classList.remove('hidden');
     
-    // Play vintage startup sound
-    SoundManager.play('chime');
-
-    // Automatically open Trash Mail client on startup
-    setTimeout(() => {
-      WindowManager.openWindow('win-mail');
-    }, 400);
+    // Check session authentication
+    if (sessionStorage.getItem('azera-os-authenticated') === 'true') {
+      desktopScreen.classList.remove('hidden');
+      SoundManager.play('chime');
+      setTimeout(() => {
+        WindowManager.openWindow('win-mail');
+      }, 400);
+    } else {
+      const loginScreen = document.getElementById('login-screen');
+      loginScreen.classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById('login-password').focus();
+      }, 100);
+    }
   };
 
   // Run BIOS
@@ -543,5 +550,50 @@ function initStartMenu() {
   document.addEventListener('click', () => {
     startBtn.classList.remove('active');
     startMenu.classList.add('hidden');
+  });
+}
+
+// --- USER LOGIN HANDLER ---
+function initLogin() {
+  const passInput = document.getElementById('login-password');
+  const okBtn = document.getElementById('btn-login-ok');
+  const cancelBtn = document.getElementById('btn-login-cancel');
+  const loginScreen = document.getElementById('login-screen');
+  const desktopScreen = document.getElementById('desktop-screen');
+  
+  const attemptLogin = () => {
+    const pass = passInput.value;
+    if (pass === 'oca') {
+      SoundManager.play('chime');
+      sessionStorage.setItem('azera-os-authenticated', 'true');
+      loginScreen.classList.add('hidden');
+      desktopScreen.classList.remove('hidden');
+      
+      // Auto open Trash Mail
+      setTimeout(() => {
+        WindowManager.openWindow('win-mail');
+      }, 400);
+    } else {
+      SoundManager.play('error');
+      passInput.style.borderColor = '#ff3333';
+      passInput.value = '';
+      setTimeout(() => {
+        passInput.style.borderColor = '';
+        passInput.focus();
+      }, 800);
+    }
+  };
+
+  okBtn.addEventListener('click', attemptLogin);
+  passInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      attemptLogin();
+    }
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    SoundManager.play('click');
+    passInput.value = '';
+    passInput.focus();
   });
 }
