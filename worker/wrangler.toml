@@ -1,0 +1,13 @@
+name = "azera-mail-worker"
+main = "src/index.js"
+compatibility_date = "2026-07-07"
+
+# Bind the D1 database
+[[d1_databases]]
+binding = "DB"
+database_name = "azera-mail-db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+# Cron trigger to delete emails older than 24 hours (runs every hour)
+[triggers]
+crons = ["0 * * * *"]

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azera OS - Retro Tool Suite</title>
+  <meta name="description" content="A premium retro operating system simulation featuring a self-hosted temporary email client and developer tools.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts for retro & modern look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=VT323&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="theme-classic">
+
+  <!-- CRT Screen Overlay Effects -->
+  <div class="crt-screen">
+    <div class="crt-scanlines"></div>
+    <div class="crt-flicker"></div>
+    <div class="crt-vignette"></div>
+
+    <!-- 1. BIOS Boot Screen -->
+    <div id="bios-screen" class="screen">
+      <div class="bios-content">
+        <div class="bios-header">
+          <pre>
+███████╗███████╗███████╗██████╗  █████╗      ██████╗ ███████╗
+██╔════╝╚══███╔╝██╔════╝██╔══██╗██╔══██╗    ██╔═══██╗██╔════╝
+█████╗    ███╔╝ █████╗  ██████╔╝███████║    ██║   ██║███████╗
+██╔══╝   ███╔╝  ██╔══╝  ██╔══██╗██╔══██║    ██║   ██║╚════██║
+███████╗███████╗███████╗██║  ██║██║  ██║    ╚██████╔╝███████║
+╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝     ╚═════╝ ╚══════╝
+          </pre>
+          <p>AZERA BIOS v4.01 - (C) 2026 AZERA CORP.</p>
+        </div>
+        <div class="bios-log" id="bios-log">
+          <!-- Dynamically populated via JS -->
+        </div>
+        <div class="bios-footer">
+          <p>PRESS <span class="blink">ESC</span> OR CLICK TO SKIP BOOT SEQUENCE...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Main Desktop OS -->
+    <div id="desktop-screen" class="screen hidden">
+      
+      <!-- Desktop Area for Icons and Windows -->
+      <div class="desktop-area" id="desktop-area">
+        
+        <!-- Desktop Shortcuts -->
+        <div class="desktop-shortcuts">
+          <div class="shortcut" data-window="win-mail">
+            <div class="shortcut-icon icon-mail"></div>
+            <span class="shortcut-label">Trash Mail</span>
+          </div>
+          
+          <div class="shortcut" data-window="win-encoder">
+            <div class="shortcut-icon icon-encoder"></div>
+            <span class="shortcut-label">Text Encoder</span>
+          </div>
+          
+          <div class="shortcut" data-window="win-json">
+            <div class="shortcut-icon icon-json"></div>
+            <span class="shortcut-label">JSON Beautifier</span>
+          </div>
+          
+          <div class="shortcut" data-window="win-passgen">
+            <div class="shortcut-icon icon-passgen"></div>
+            <span class="shortcut-label">Pass Generator</span>
+          </div>
+          
+          <div class="shortcut" data-window="win-specs">
+            <div class="shortcut-icon icon-specs"></div>
+            <span class="shortcut-label">System Diagnostic</span>
+          </div>
+          
+          <div class="shortcut" data-window="win-help">
+            <div class="shortcut-icon icon-help"></div>
+            <span class="shortcut-label">Worker Setup</span>
+          </div>
+        </div>
+
+        <!-- Floating Windows -->
+        
+        <!-- Window: Trash Mail -->
+        <div id="win-mail" class="window hidden" style="width: 720px; height: 500px; left: 8%; top: 10%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span class="win-title-icon icon-mail-sm"></span>
+              <span>Azera Trash Mail v1.0</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-min" data-action="minimize">_</button>
+              <button class="win-btn win-max" data-action="maximize">🗖</button>
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body window-split">
+            <div class="mail-top-bar">
+              <div class="mail-input-group">
+                <span class="retro-label">Inbox:</span>
+                <input type="text" id="mail-username" placeholder="enter inbox" class="retro-input">
+                <select id="mail-domain" class="retro-select">
+                  <option value="azera.biz.id">@azera.biz.id</option>
+                </select>
+                <button id="btn-mail-go" class="retro-btn btn-primary">Go</button>
+                <button id="btn-mail-random" class="retro-btn">Random</button>
+              </div>
+              <div class="mail-api-config">
+                <button id="btn-config-api" class="retro-btn-sm" title="Configure API Endpoint">⚙️ API</button>
+              </div>
+            </div>
+
+            <div class="mail-address-display">
+              <span class="retro-label">Temporary Address:</span>
+              <span id="full-mail-address" class="selectable-address">loading...</span>
+              <button id="btn-copy-address" class="retro-btn-sm">Copy Address</button>
+              <div class="refresh-controls">
+                <label class="retro-checkbox-container">
+                  <input type="checkbox" id="mail-auto-refresh" checked>
+                  <span class="checkmark"></span> Auto Refresh (10s)
+                </label>
+                <button id="btn-mail-refresh" class="retro-btn-sm">🔄 Refresh Now</button>
+              </div>
+            </div>
+
+            <div class="mail-layout-container">
+              <!-- Sidebar / List of emails -->
+              <div class="mail-list-panel">
+                <table class="retro-table">
+                  <thead>
+                    <tr>
+                      <th>Sender</th>
+                      <th>Subject</th>
+                      <th class="col-time">Time</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mail-list-body">
+                    <tr>
+                      <td colspan="3" class="text-center">No emails received yet. Send an email to load the list!</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- Detail Panel -->
+              <div class="mail-detail-panel">
+                <div id="mail-detail-placeholder" class="detail-placeholder">
+                  <p>Select an email from the list to read its content.</p>
+                </div>
+                <div id="mail-detail-content" class="detail-content hidden">
+                  <div class="detail-headers">
+                    <div><strong>From:</strong> <span id="detail-from"></span></div>
+                    <div><strong>Subject:</strong> <span id="detail-subject"></span></div>
+                    <div><strong>Date:</strong> <span id="detail-date"></span></div>
+                  </div>
+                  <div class="detail-actions">
+                    <button id="btn-view-raw" class="retro-btn-sm">View Text Mode</button>
+                    <button id="btn-view-html" class="retro-btn-sm active">View HTML Mode</button>
+                    <button id="btn-delete-email" class="retro-btn-sm btn-danger">🗑️ Delete</button>
+                  </div>
+                  <div class="detail-body-container">
+                    <iframe id="mail-iframe" class="mail-iframe-rendered" sandbox="allow-popups"></iframe>
+                    <pre id="mail-text-rendered" class="mail-text-rendered hidden"></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="window-statusbar">
+            <span id="mail-status-text">Idle</span>
+            <span id="mail-api-status" class="status-badge badge-green">API Connected</span>
+          </div>
+        </div>
+
+        <!-- Window: Text Encoder -->
+        <div id="win-encoder" class="window hidden" style="width: 600px; height: 420px; left: 15%; top: 15%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span class="win-title-icon icon-encoder-sm"></span>
+              <span>Base64 / URL Encoder & Decoder</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-min" data-action="minimize">_</button>
+              <button class="win-btn win-max" data-action="maximize">🗖</button>
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="tool-layout">
+              <div class="form-group">
+                <label class="retro-label">Input Text:</label>
+                <textarea id="encoder-input" class="retro-textarea" placeholder="Type or paste text here..."></textarea>
+              </div>
+              <div class="button-row">
+                <button id="btn-b64-encode" class="retro-btn">Base64 Encode</button>
+                <button id="btn-b64-decode" class="retro-btn">Base64 Decode</button>
+                <button id="btn-url-encode" class="retro-btn">URL Encode</button>
+                <button id="btn-url-decode" class="retro-btn">URL Decode</button>
+                <button id="btn-rot13" class="retro-btn">ROT13</button>
+              </div>
+              <div class="form-group">
+                <label class="retro-label">Output Text:</label>
+                <textarea id="encoder-output" class="retro-textarea" readonly placeholder="Output will appear here..."></textarea>
+              </div>
+              <div class="action-row">
+                <button id="btn-copy-encoder" class="retro-btn btn-primary">Copy Output</button>
+                <button id="btn-clear-encoder" class="retro-btn">Clear</button>
+              </div>
+            </div>
+          </div>
+          <div class="window-statusbar">
+            <span>Ready</span>
+            <span>Character Count: <span id="encoder-char-count">0</span></span>
+          </div>
+        </div>
+
+        <!-- Window: JSON Beautifier -->
+        <div id="win-json" class="window hidden" style="width: 600px; height: 450px; left: 20%; top: 12%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span class="win-title-icon icon-json-sm"></span>
+              <span>JSON Formatter & Validator</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-min" data-action="minimize">_</button>
+              <button class="win-btn win-max" data-action="maximize">🗖</button>
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="tool-layout">
+              <div class="form-group-split">
+                <div class="form-group flex-1">
+                  <label class="retro-label">Raw JSON:</label>
+                  <textarea id="json-input" class="retro-textarea" placeholder="Paste raw JSON here..."></textarea>
+                </div>
+                <div class="form-group flex-1">
+                  <label class="retro-label">Formatted JSON:</label>
+                  <textarea id="json-output" class="retro-textarea" readonly placeholder="Result will appear here..."></textarea>
+                </div>
+              </div>
+              <div class="validation-status-box id-valid" id="json-validation-box">
+                <span id="json-validation-text">Enter some JSON to validate.</span>
+              </div>
+              <div class="action-row">
+                <button id="btn-json-beautify-2" class="retro-btn btn-primary">Beautify (2 Spaces)</button>
+                <button id="btn-json-beautify-4" class="retro-btn">Beautify (4 Spaces)</button>
+                <button id="btn-json-minify" class="retro-btn">Minify</button>
+                <button id="btn-copy-json" class="retro-btn">Copy Output</button>
+                <button id="btn-clear-json" class="retro-btn">Clear</button>
+              </div>
+            </div>
+          </div>
+          <div class="window-statusbar">
+            <span>JSON Engine Active</span>
+            <span id="json-status-detail">Lines: 0</span>
+          </div>
+        </div>
+
+        <!-- Window: Password Generator -->
+        <div id="win-passgen" class="window hidden" style="width: 500px; height: 380px; left: 25%; top: 20%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span class="win-title-icon icon-passgen-sm"></span>
+              <span>Secure Password Generator</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-min" data-action="minimize">_</button>
+              <button class="win-btn win-max" data-action="maximize">🗖</button>
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="tool-layout">
+              <div class="form-group">
+                <label class="retro-label">Generated Password:</label>
+                <div class="input-with-button">
+                  <input type="text" id="pass-output" class="retro-input text-lg font-mono" readonly placeholder="Click Generate">
+                  <button id="btn-copy-pass" class="retro-btn">Copy</button>
+                </div>
+              </div>
+              
+              <div class="strength-bar-container">
+                <span class="retro-label-sm">Strength:</span>
+                <div class="strength-meter">
+                  <div id="strength-fill" class="strength-fill strength-weak" style="width: 0%;"></div>
+                </div>
+                <span id="strength-label" class="strength-text">Empty</span>
+              </div>
+
+              <div class="options-container">
+                <div class="form-group">
+                  <div class="slider-group">
+                    <label class="retro-label">Length: <span id="pass-length-val">16</span></label>
+                    <input type="range" id="pass-length" min="6" max="64" value="16" class="retro-slider">
+                  </div>
+                </div>
+
+                <div class="checkbox-grid">
+                  <label class="retro-checkbox-container">
+                    <input type="checkbox" id="pass-upper" checked>
+                    <span class="checkmark"></span> Uppercase (A-Z)
+                  </label>
+                  <label class="retro-checkbox-container">
+                    <input type="checkbox" id="pass-lower" checked>
+                    <span class="checkmark"></span> Lowercase (a-z)
+                  </label>
+                  <label class="retro-checkbox-container">
+                    <input type="checkbox" id="pass-numbers" checked>
+                    <span class="checkmark"></span> Numbers (0-9)
+                  </label>
+                  <label class="retro-checkbox-container">
+                    <input type="checkbox" id="pass-symbols" checked>
+                    <span class="checkmark"></span> Symbols (!@#$%)
+                  </label>
+                </div>
+              </div>
+
+              <div class="action-row text-center">
+                <button id="btn-generate-pass" class="retro-btn btn-primary btn-block">Generate Strong Password</button>
+              </div>
+            </div>
+          </div>
+          <div class="window-statusbar">
+            <span>Entropy Safe</span>
+            <span>PRNG Cryptographically Secure</span>
+          </div>
+        </div>
+
+        <!-- Window: System Diagnostic -->
+        <div id="win-specs" class="window hidden" style="width: 480px; height: 350px; left: 30%; top: 22%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span class="win-title-icon icon-specs-sm"></span>
+              <span>System Diagnostic Monitor</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-min" data-action="minimize">_</button>
+              <button class="win-btn win-max" data-action="maximize">🗖</button>
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="spec-grid">
+              <div class="spec-item">
+                <span class="spec-name">OPERATING SYSTEM</span>
+                <span class="spec-value" id="spec-os">Loading...</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-name">BROWSER CORE</span>
+                <span class="spec-value" id="spec-browser">Loading...</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-name">SCREEN RESOLUTION</span>
+                <span class="spec-value" id="spec-resolution">Loading...</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-name">VIEWPORT AREA</span>
+                <span class="spec-value" id="spec-viewport">Loading...</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-name">CLIENT IP ADDRESS</span>
+                <span class="spec-value" id="spec-ip">Fetching...</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-name">NETWORK STATUS</span>
+                <span class="spec-value" id="spec-network">ONLINE</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-name">SYSTEM TIME</span>
+                <span class="spec-value font-mono" id="spec-time">Loading...</span>
+              </div>
+            </div>
+          </div>
+          <div class="window-statusbar">
+            <span>Kernel: WebKit/Gecko</span>
+            <span>Diagnostics OK</span>
+          </div>
+        </div>
+
+        <!-- Window: Worker Setup -->
+        <div id="win-help" class="window hidden" style="width: 650px; height: 460px; left: 10%; top: 12%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span class="win-title-icon icon-help-sm"></span>
+              <span>Self-Hosted Setup Guide</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-min" data-action="minimize">_</button>
+              <button class="win-btn win-max" data-action="maximize">🗖</button>
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body html-doc-pane">
+            <h2>Setting up your custom Temporary Email Service</h2>
+            <p>This website runs a temporary email client that communicates with a Cloudflare Worker and D1 Database. Since you own <strong>azera.biz.id</strong>, you can host your own email receiver backend for 100% free!</p>
+            
+            <hr>
+            
+            <h3>Step 1: Create a D1 Database</h3>
+            <ol>
+              <li>Log in to your <strong>Cloudflare Dashboard</strong>.</li>
+              <li>Navigate to <strong>Workers & Pages</strong> > <strong>D1</strong>.</li>
+              <li>Click <strong>Create database</strong> > <strong>Create empty database</strong>.</li>
+              <li>Name it <code>azera-mail-db</code>.</li>
+              <li>Note the <strong>Database ID</strong>. Copy it.</li>
+            </ol>
+
+            <h3>Step 2: Deploy the Cloudflare Worker</h3>
+            <ol>
+              <li>In the repository, open the file <code>worker/wrangler.toml</code>.</li>
+              <li>Replace <code>REPLACE_WITH_YOUR_D1_DATABASE_ID</code> with your Database ID.</li>
+              <li>Open a terminal in the <code>worker</code> directory.</li>
+              <li>Run <code>npm install</code>.</li>
+              <li>Log in to Cloudflare CLI by running: <code>npx wrangler login</code>.</li>
+              <li>Create and initialize the D1 database tables using the schema file:
+                <pre class="code-box">npx wrangler d1 execute azera-mail-db --remote --file=./schema.sql</pre>
+              </li>
+              <li>Deploy the worker to your Cloudflare account:
+                <pre class="code-box">npx wrangler deploy</pre>
+              </li>
+            </ol>
+
+            <h3>Step 3: Setup Email Routing</h3>
+            <ol>
+              <li>In Cloudflare Dashboard, select your domain <strong>azera.biz.id</strong>.</li>
+              <li>Go to <strong>Email</strong> > <strong>Email Routing</strong>.</li>
+              <li>Enable Email Routing (Cloudflare will automatically set up the required MX DNS records for you!).</li>
+              <li>Under <strong>Destination Addresses</strong>, make sure email addresses are configured (optional, but good for verification).</li>
+              <li>Under <strong>Routing Rules</strong>, click <strong>Create rule</strong>:
+                <ul>
+                  <li><strong>Custom Address</strong>: Choose <em>Catch-all</em> (or custom address like wildcard <code>*@azera.biz.id</code>).</li>
+                  <li><strong>Action</strong>: Choose <em>Send to Worker</em>.</li>
+                  <li><strong>Destination Worker</strong>: Select <code>azera-mail-worker</code>.</li>
+                </ul>
+              </li>
+              <li>Click <strong>Save</strong>.</li>
+            </ol>
+
+            <h3>Step 4: Configure Frontend API</h3>
+            <p>Once deployed, your Cloudflare Worker will have a URL (e.g. <code>https://azera-mail-worker.yoursubdomain.workers.dev</code>).</p>
+            <p>Click the <strong>⚙️ API</strong> button in the Trash Mail app window and enter this URL. The client will store this in your browser's local storage and pull messages from your own backend!</p>
+
+            <div class="note-box alert-note">
+              <strong>Security & Cleanup Note:</strong> The worker code has a built-in schedule that runs once an hour to delete emails older than 24 hours. Your storage will stay well within Cloudflare D1 free-tier limits!
+            </div>
+          </div>
+          <div class="window-statusbar">
+            <span>Help Guide v1.0</span>
+            <span>Document Read-Only</span>
+          </div>
+        </div>
+
+        <!-- Dialog Window: API Config (Modal style) -->
+        <div id="win-api-config" class="window hidden dialog-window" style="width: 420px; height: 230px; left: 35%; top: 30%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span>API Server Settings</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body">
+            <div class="tool-layout">
+              <p class="text-sm">Specify the endpoint URL of your deployed Cloudflare Worker API.</p>
+              <div class="form-group">
+                <label class="retro-label">Worker Endpoint URL:</label>
+                <input type="text" id="api-endpoint-input" class="retro-input" placeholder="https://azera-mail-worker.yourname.workers.dev">
+              </div>
+              <p class="text-xs text-muted">Leave empty to use the default demo backend if available.</p>
+              <div class="action-row text-right">
+                <button id="btn-save-api-config" class="retro-btn btn-primary">Save Settings</button>
+                <button id="btn-cancel-api-config" class="retro-btn">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Taskbar at the bottom -->
+      <div class="taskbar">
+        
+        <!-- Start Button -->
+        <div class="start-menu-container">
+          <button id="btn-start" class="start-btn">
+            <span class="start-logo"></span>
+            <span>Start</span>
+          </button>
+          
+          <!-- Start Menu Dropdown -->
+          <div id="start-menu" class="start-menu hidden">
+            <div class="start-menu-sidebar">
+              <div class="sidebar-text">Azera OS</div>
+            </div>
+            <div class="start-menu-items">
+              <div class="start-item" data-window="win-mail">
+                <span class="start-icon icon-mail-sm"></span>
+                <span>Trash Mail</span>
+              </div>
+              <div class="start-item" data-window="win-encoder">
+                <span class="start-icon icon-encoder-sm"></span>
+                <span>Text Encoder</span>
+              </div>
+              <div class="start-item" data-window="win-json">
+                <span class="start-icon icon-json-sm"></span>
+                <span>JSON Beautifier</span>
+              </div>
+              <div class="start-item" data-window="win-passgen">
+                <span class="start-icon icon-passgen-sm"></span>
+                <span>Password Generator</span>
+              </div>
+              <div class="start-item" data-window="win-specs">
+                <span class="start-icon icon-specs-sm"></span>
+                <span>System Diagnostic</span>
+              </div>
+              <div class="start-item" data-window="win-help">
+                <span class="start-icon icon-help-sm"></span>
+                <span>Setup Guide</span>
+              </div>
+              <hr class="start-divider">
+              <div class="start-item" id="start-restart">
+                <span class="start-icon">🔄</span>
+                <span>Restart System</span>
+              </div>
+              <div class="start-item" id="start-shutdown">
+                <span class="start-icon">🛑</span>
+                <span>Shut Down</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Taskbar Windows Tabs -->
+        <div class="taskbar-tabs" id="taskbar-tabs">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- Taskbar System Tray -->
+        <div class="system-tray">
+          <!-- Audio Toggle -->
+          <button id="btn-audio-toggle" class="tray-btn" title="Toggle System Sound">
+            🔊 Sound
+          </button>
+          <!-- Theme Switcher -->
+          <div class="tray-theme-container">
+            <button id="btn-tray-theme" class="tray-btn">
+              🎨 Classic
+            </button>
+            <div id="theme-menu" class="theme-dropdown hidden">
+              <div class="theme-item" data-theme="classic">Classic 95</div>
+              <div class="theme-item" data-theme="amber">Pip-Boy Amber</div>
+              <div class="theme-item" data-theme="green">Pip-Boy Green</div>
+              <div class="theme-item" data-theme="synthwave">Neon Synthwave</div>
+            </div>
+          </div>
+          <!-- Clock -->
+          <div class="tray-clock" id="tray-clock">
+            00:00:00
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Main scripts -->
+  <script src="js/tools.js"></script>
+  <script src="js/mail.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
