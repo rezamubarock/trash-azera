@@ -1,6 +1,6 @@
 // --- TRASH MAIL MODULE ---
 const TrashMail = {
-  apiEndpoint: 'https://api.azera.biz.id',
+  apiEndpoint: 'https://azera-mail-worker.rezamubarok75.workers.dev',
   inbox: '',
   emailsList: [],
   selectedEmail: null,
@@ -27,6 +27,8 @@ const TrashMail = {
     const savedEndpoint = localStorage.getItem('azera-mail-api-endpoint');
     if (savedEndpoint) {
       this.apiEndpoint = savedEndpoint.trim().replace(/\/$/, ''); // Remove trailing slash
+    } else {
+      this.apiEndpoint = 'https://azera-mail-worker.rezamubarok75.workers.dev';
     }
     
     // Update domain input list if they want more domains in future

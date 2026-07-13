@@ -311,7 +311,7 @@ const BiosSimulator = {
     { text: "[ OK ] Mounted virtual filesystem /proc", delay: 50, class: "success" },
     { text: "[ OK ] Started system logging service", delay: 50, class: "success" },
     { text: "[ OK ] Loaded network stack (CORS/HTTPS)", delay: 80, class: "success" },
-    { text: "[ WARNING ] Demo email endpoint used. Configure custom server for custom domain.", delay: 100, class: "warning" },
+    { text: "[ OK ] Connected to API: azera-mail-worker.rezamubarok75", delay: 100, class: "success" },
     { text: "[ OK ] Initialized Retro Tool Library", delay: 60, class: "success" },
     { text: "Starting Desktop Server Interface...", delay: 200 }
   ],
