@@ -1313,10 +1313,20 @@ body.theme-classic .start-menu-sidebar {
   text-align: center;
 }
 
+/* MOBILE-ONLY DISPLAY UTILITIES */
+.mobile-only-btn {
+  display: none !important;
+}
+
 /* RESPONSIVE SCALES FOR MOBILE VIEWPORT */
 @media (max-width: 768px) {
+  .mobile-only-btn {
+    display: inline-block !important;
+  }
+
   .desktop-area {
     padding: 10px;
+    height: calc(100vh - 40px);
   }
   
   .desktop-shortcuts {
@@ -1324,61 +1334,84 @@ body.theme-classic .start-menu-sidebar {
     width: 100%;
     height: auto;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 15px;
+    gap: 8px;
+    justify-content: flex-start;
+    margin-bottom: 10px;
   }
   
   .shortcut {
-    width: 65px;
-    height: 65px;
+    width: 60px;
+    height: 60px;
     padding: 2px;
   }
   
   .shortcut-icon {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
   
   .shortcut-label {
-    font-size: 9px;
-    max-width: 65px;
+    font-size: 8px;
+    max-width: 60px;
   }
   
-  /* Stack Windows and force them to fit screen */
+  /* Make windows take full screen on mobile (behaves like full screen app tabs) */
   .window {
-    width: 95% !important;
-    height: 80% !important;
-    left: 2.5% !important;
-    top: 5% !important;
+    width: 100% !important;
+    height: calc(100vh - 40px) !important;
+    left: 0px !important;
+    top: 0px !important;
+    border: none !important;
+    box-shadow: none !important;
   }
   
-  /* Mail layouts on mobile stack panels */
+  /* Mail Layout: Toggle list vs reading pane on mobile using :has selector */
   .mail-layout-container {
     flex-direction: column;
+    height: 100%;
+  }
+
+  /* If email details content is hidden, show list and hide details panel */
+  .mail-detail-panel:has(#mail-detail-content.hidden) {
+    display: none !important;
   }
   .mail-list-panel {
-    width: 100%;
-    height: 40%;
-    border-right: none;
-    border-bottom: 2px solid var(--win-border-dark);
+    width: 100% !important;
+    height: 100% !important;
+    border-right: none !important;
   }
-  .mail-detail-panel {
-    width: 100%;
-    height: 60%;
+
+  /* If email details content is NOT hidden, hide list and show details panel full width */
+  .mail-layout-container:has(#mail-detail-content:not(.hidden)) .mail-list-panel {
+    display: none !important;
+  }
+  .mail-layout-container:has(#mail-detail-content:not(.hidden)) .mail-detail-panel {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
   }
   
   .mail-input-group {
     flex-wrap: wrap;
     gap: 3px;
+    width: 100%;
   }
+
+  .mail-input-group input {
+    flex: 1;
+    min-width: 80px;
+  }
+
   .mail-top-bar {
-    padding: 4px;
+    padding: 6px;
   }
+
   .mail-address-display {
     flex-direction: column;
     align-items: flex-start;
-    gap: 5px;
+    gap: 6px;
   }
+
   .refresh-controls {
     margin-left: 0;
     width: 100%;
@@ -1387,9 +1420,31 @@ body.theme-classic .start-menu-sidebar {
   
   .form-group-split {
     flex-direction: column;
+    gap: 10px;
+  }
+
+  .detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px;
   }
   
   .system-tray .tray-btn span {
+    display: none;
+  }
+
+  /* Scale down font sizes slightly for inputs on mobile */
+  .retro-input, .retro-select, .retro-textarea {
+    font-size: 11px;
+  }
+
+  .retro-table th, .retro-table td {
+    padding: 3px 4px;
+  }
+
+  /* Hide connection status text to save space in statusbar */
+  .window-statusbar span:last-child {
     display: none;
   }
 }

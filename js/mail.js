@@ -7,6 +7,7 @@ const TrashMail = {
   autoRefreshInterval: null,
   viewMode: 'html', // 'html' or 'text'
   isDemoMode: false,
+  latestEmailId: null,
 
   init() {
     this.loadConfig();
@@ -125,6 +126,12 @@ const TrashMail = {
         this.deleteEmail(this.selectedEmail.id);
       }
     });
+
+    document.getElementById('btn-mail-back').addEventListener('click', () => {
+      SoundManager.play('click-low');
+      this.selectedEmail = null;
+      this.updateMailUI();
+    });
   },
 
   setInbox(username) {
@@ -231,6 +238,21 @@ const TrashMail = {
       
       statusText.textContent = `Last checked: ${new Date().toLocaleTimeString()} (Found ${data.length} message(s))`;
       this.renderEmailsTable();
+
+      // Auto-open latest email logic
+      if (data.length > 0) {
+        const newLatestId = data[0].id;
+        if (!this.latestEmailId || this.latestEmailId !== newLatestId) {
+          const isInitialLoad = !this.latestEmailId;
+          this.latestEmailId = newLatestId;
+          this.selectEmail(newLatestId);
+          if (!isInitialLoad && WindowManager.windows['win-mail'].minimized === false) {
+            SoundManager.play('boot');
+          }
+        }
+      } else {
+        this.latestEmailId = null;
+      }
 
     } catch (err) {
       console.warn('API connection failed. Switching to local Demo Mode:', err.message);
@@ -502,6 +524,8 @@ const TrashMail = {
       };
 
       this.emailsList.push(welcomeEmail);
+      this.latestEmailId = welcomeEmail.id;
+      this.selectEmail(welcomeEmail.id);
       if (WindowManager.windows['win-mail'].minimized === false) {
         SoundManager.play('boot'); // Play alert tone when email arrives
       }

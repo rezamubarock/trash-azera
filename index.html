@@ -76,10 +76,7 @@
             <span class="shortcut-label">System Diagnostic</span>
           </div>
           
-          <div class="shortcut" data-window="win-help">
-            <div class="shortcut-icon icon-help"></div>
-            <span class="shortcut-label">Worker Setup</span>
-          </div>
+
         </div>
 
         <!-- Floating Windows -->
@@ -156,6 +153,7 @@
                     <div><strong>Date:</strong> <span id="detail-date"></span></div>
                   </div>
                   <div class="detail-actions">
+                    <button id="btn-mail-back" class="retro-btn-sm mobile-only-btn">⬅ Inbox</button>
                     <button id="btn-view-raw" class="retro-btn-sm">View Text Mode</button>
                     <button id="btn-view-html" class="retro-btn-sm active">View HTML Mode</button>
                     <button id="btn-delete-email" class="retro-btn-sm btn-danger">🗑️ Delete</button>
@@ -380,78 +378,7 @@
           </div>
         </div>
 
-        <!-- Window: Worker Setup -->
-        <div id="win-help" class="window hidden" style="width: 650px; height: 460px; left: 10%; top: 12%;">
-          <div class="window-header">
-            <div class="window-title">
-              <span class="win-title-icon icon-help-sm"></span>
-              <span>Self-Hosted Setup Guide</span>
-            </div>
-            <div class="window-controls">
-              <button class="win-btn win-min" data-action="minimize">_</button>
-              <button class="win-btn win-max" data-action="maximize">🗖</button>
-              <button class="win-btn win-close" data-action="close">×</button>
-            </div>
-          </div>
-          <div class="window-body html-doc-pane">
-            <h2>Setting up your custom Temporary Email Service</h2>
-            <p>This website runs a temporary email client that communicates with a Cloudflare Worker and D1 Database. Since you own <strong>azera.biz.id</strong>, you can host your own email receiver backend for 100% free!</p>
-            
-            <hr>
-            
-            <h3>Step 1: Create a D1 Database</h3>
-            <ol>
-              <li>Log in to your <strong>Cloudflare Dashboard</strong>.</li>
-              <li>Navigate to <strong>Workers & Pages</strong> > <strong>D1</strong>.</li>
-              <li>Click <strong>Create database</strong> > <strong>Create empty database</strong>.</li>
-              <li>Name it <code>azera-mail-db</code>.</li>
-              <li>Note the <strong>Database ID</strong>. Copy it.</li>
-            </ol>
 
-            <h3>Step 2: Deploy the Cloudflare Worker</h3>
-            <ol>
-              <li>In the repository, open the file <code>worker/wrangler.toml</code>.</li>
-              <li>Replace <code>REPLACE_WITH_YOUR_D1_DATABASE_ID</code> with your Database ID.</li>
-              <li>Open a terminal in the <code>worker</code> directory.</li>
-              <li>Run <code>npm install</code>.</li>
-              <li>Log in to Cloudflare CLI by running: <code>npx wrangler login</code>.</li>
-              <li>Create and initialize the D1 database tables using the schema file:
-                <pre class="code-box">npx wrangler d1 execute azera-mail-db --remote --file=./schema.sql</pre>
-              </li>
-              <li>Deploy the worker to your Cloudflare account:
-                <pre class="code-box">npx wrangler deploy</pre>
-              </li>
-            </ol>
-
-            <h3>Step 3: Setup Email Routing</h3>
-            <ol>
-              <li>In Cloudflare Dashboard, select your domain <strong>azera.biz.id</strong>.</li>
-              <li>Go to <strong>Email</strong> > <strong>Email Routing</strong>.</li>
-              <li>Enable Email Routing (Cloudflare will automatically set up the required MX DNS records for you!).</li>
-              <li>Under <strong>Destination Addresses</strong>, make sure email addresses are configured (optional, but good for verification).</li>
-              <li>Under <strong>Routing Rules</strong>, click <strong>Create rule</strong>:
-                <ul>
-                  <li><strong>Custom Address</strong>: Choose <em>Catch-all</em> (or custom address like wildcard <code>*@azera.biz.id</code>).</li>
-                  <li><strong>Action</strong>: Choose <em>Send to Worker</em>.</li>
-                  <li><strong>Destination Worker</strong>: Select <code>azera-mail-worker</code>.</li>
-                </ul>
-              </li>
-              <li>Click <strong>Save</strong>.</li>
-            </ol>
-
-            <h3>Step 4: Configure Frontend API</h3>
-            <p>Once deployed, your Cloudflare Worker will have a URL (e.g. <code>https://azera-mail-worker.yoursubdomain.workers.dev</code>).</p>
-            <p>Click the <strong>⚙️ API</strong> button in the Trash Mail app window and enter this URL. The client will store this in your browser's local storage and pull messages from your own backend!</p>
-
-            <div class="note-box alert-note">
-              <strong>Security & Cleanup Note:</strong> The worker code has a built-in schedule that runs once an hour to delete emails older than 24 hours. Your storage will stay well within Cloudflare D1 free-tier limits!
-            </div>
-          </div>
-          <div class="window-statusbar">
-            <span>Help Guide v1.0</span>
-            <span>Document Read-Only</span>
-          </div>
-        </div>
 
         <!-- Dialog Window: API Config (Modal style) -->
         <div id="win-api-config" class="window hidden dialog-window" style="width: 420px; height: 230px; left: 35%; top: 30%;">
@@ -517,10 +444,7 @@
                 <span class="start-icon icon-specs-sm"></span>
                 <span>System Diagnostic</span>
               </div>
-              <div class="start-item" data-window="win-help">
-                <span class="start-icon icon-help-sm"></span>
-                <span>Setup Guide</span>
-              </div>
+
               <hr class="start-divider">
               <div class="start-item" id="start-restart">
                 <span class="start-icon">🔄</span>

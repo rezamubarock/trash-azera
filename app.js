@@ -389,9 +389,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Play vintage startup sound
     SoundManager.play('chime');
 
-    // Automatically open Trash Mail client and Setup Guide on startup
+    // Automatically open Trash Mail client on startup
     setTimeout(() => {
-      WindowManager.openWindow('win-help');
       WindowManager.openWindow('win-mail');
     }, 400);
   };
