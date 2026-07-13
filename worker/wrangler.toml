@@ -6,7 +6,7 @@ compatibility_date = "2026-07-07"
 [[d1_databases]]
 binding = "DB"
 database_name = "azera-mail-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "dbac6627-9e9a-4c3c-9b72-db8b267341a4"
 
 # Cron trigger to delete emails older than 24 hours (runs every hour)
 [triggers]
