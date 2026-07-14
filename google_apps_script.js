@@ -18,21 +18,43 @@
  * 9. Paste this URL into the "⚙️ Sheets Setup" in the 2FA app.
  */
 
+// OPTIONAL: If you created this script as a standalone script (NOT from Extensions > Apps Script inside Google Sheets),
+// paste your Google Spreadsheet ID below inside the quotes. Otherwise, leave it empty.
+var SPREADSHEET_ID = "";
+
+function getSheet() {
+  var ss;
+  if (SPREADSHEET_ID && SPREADSHEET_ID.trim() !== "") {
+    ss = SpreadsheetApp.openById(SPREADSHEET_ID.trim());
+  } else {
+    ss = SpreadsheetApp.getActiveSpreadsheet();
+  }
+  
+  if (!ss) {
+    throw new Error("Spreadsheet not found. Please ensure this script is container-bound (created via Extensions > Apps Script in Google Sheets) or set the SPREADSHEET_ID variable at the top of this script.");
+  }
+  
+  return ss.getActiveSheet();
+}
+
 // 1. GET Request: Fetches all stored 2FA credentials
 function doGet(e) {
   try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var rows = sheet.getDataRange().getValues();
+    var sheet = getSheet();
+    var lastRow = sheet.getLastRow();
     var data = [];
     
-    // Read rows starting from row 2 (index 1) to skip headers
-    for (var i = 1; i < rows.length; i++) {
-      if (rows[i][0] && rows[i][1]) {
-        data.push({
-          name: rows[i][0],
-          secret: rows[i][1],
-          created_at: rows[i][2] || new Date().toISOString()
-        });
+    if (lastRow > 1) {
+      var rows = sheet.getRange(1, 1, lastRow, sheet.getLastColumn()).getValues();
+      // Read rows starting from row 2 (index 1) to skip headers
+      for (var i = 1; i < rows.length; i++) {
+        if (rows[i][0] && rows[i][1]) {
+          data.push({
+            name: rows[i][0],
+            secret: rows[i][1],
+            created_at: rows[i][2] || new Date().toISOString()
+          });
+        }
       }
     }
     
@@ -48,7 +70,7 @@ function doGet(e) {
 function doPost(e) {
   try {
     var params = JSON.parse(e.postData.contents);
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var sheet = getSheet();
     
     // Append rows: Name, Secret, Timestamp
     sheet.appendRow([

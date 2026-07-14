@@ -169,10 +169,7 @@ const TwoFA = {
 
     try {
       // Fetch data
-      const response = await fetch(this.sheetsUrl, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      });
+      const response = await fetch(this.sheetsUrl);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
