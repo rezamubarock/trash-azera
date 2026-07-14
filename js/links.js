@@ -12,7 +12,7 @@ const LinkList = {
   },
 
   loadSettings() {
-    this.sheetsUrl = localStorage.getItem('azera-links-sheets-url') || '';
+    this.sheetsUrl = localStorage.getItem('azera-links-sheets-url') || 'https://script.google.com/macros/s/AKfycbzko-5LEMLCQV9YzbScYgN_w4CJ2KYpQFwY2AURPSgX8RJuHgHA_1KpVB4P-FNvG7L5ng/exec';
     
     const inputUrl = document.getElementById('links-sheets-url-input');
     if (inputUrl) {
