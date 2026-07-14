@@ -12,9 +12,7 @@ const LinkList = {
   },
 
   loadSettings() {
-    // Default to the same Sheets URL used by 2FA if links-specific URL is not set
-    const defaultUrl = 'https://script.google.com/macros/s/AKfycby6ZBLR1j2kE_dwe6pMHkXGnwUC-SWf3l3VCAaPumvk_SmXCdmoSyTko1pA09XvcVtB/exec';
-    this.sheetsUrl = localStorage.getItem('azera-links-sheets-url') || localStorage.getItem('azera-2fa-sheets-url') || defaultUrl;
+    this.sheetsUrl = localStorage.getItem('azera-links-sheets-url') || '';
     
     const inputUrl = document.getElementById('links-sheets-url-input');
     if (inputUrl) {
@@ -114,9 +112,7 @@ const LinkList = {
     }
 
     try {
-      // Append sheet=Links to parameter to isolate this data tab
-      const url = `${this.sheetsUrl}${this.sheetsUrl.includes('?') ? '&' : '?'}sheet=Links`;
-      const response = await fetch(url);
+      const response = await fetch(this.sheetsUrl);
       
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       
@@ -128,7 +124,7 @@ const LinkList = {
       this.links = rawData.map(item => ({
         id: item.id,
         name: item.name,
-        url: item.secret, // secret maps to URL in links sheet
+        url: item.url, // maps to url in the dedicated links sheet
         createdAt: item.created_at
       }));
 
@@ -308,11 +304,10 @@ const LinkList = {
 
     const isEdit = this.editingLinkId !== null;
     const payload = {
-      sheet: 'Links',
       action: isEdit ? 'update' : 'add',
       id: isEdit ? this.editingLinkId : crypto.randomUUID(),
       name: name,
-      secret: urlVal // map url to secret column
+      url: urlVal
     };
 
     try {
@@ -362,7 +357,6 @@ const LinkList = {
     if (statusText) statusText.textContent = 'Deleting link...';
 
     const payload = {
-      sheet: 'Links',
       action: 'delete',
       id: id
     };
