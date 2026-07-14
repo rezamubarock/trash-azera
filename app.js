@@ -4,39 +4,51 @@ const SoundManager = {
   ctx: null,
 
   init() {
-    if (!this.ctx) {
-      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    try {
+      if (!this.ctx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          this.ctx = new AudioContextClass();
+        }
+      }
+    } catch (e) {
+      console.warn("Could not initialize AudioContext:", e);
     }
   },
 
   play(type) {
     if (!this.enabled) return;
-    this.init();
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
-    
-    switch (type) {
-      case 'click':
-        this.beep(880, 0.03, 'sine', 0.1);
-        break;
-      case 'boot':
-        this.beep(950, 0.15, 'square', 0.15);
-        break;
-      case 'error':
-        this.beep(220, 0.12, 'sawtooth', 0.2);
-        setTimeout(() => this.beep(180, 0.2, 'sawtooth', 0.2), 100);
-        break;
-      case 'chime':
-        this.playStartupChime();
-        break;
-      case 'click-low':
-        this.beep(550, 0.02, 'triangle', 0.1);
-        break;
+    try {
+      this.init();
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
+      
+      switch (type) {
+        case 'click':
+          this.beep(880, 0.03, 'sine', 0.1);
+          break;
+        case 'boot':
+          this.beep(950, 0.15, 'square', 0.15);
+          break;
+        case 'error':
+          this.beep(220, 0.12, 'sawtooth', 0.2);
+          setTimeout(() => this.beep(180, 0.2, 'sawtooth', 0.2), 100);
+          break;
+        case 'chime':
+          this.playStartupChime();
+          break;
+        case 'click-low':
+          this.beep(550, 0.02, 'triangle', 0.1);
+          break;
+      }
+    } catch (e) {
+      console.warn("SoundManager.play failed:", e);
     }
   },
 
   beep(freq, duration, type = 'sine', volume = 0.1) {
+    if (!this.ctx) return;
     try {
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -53,7 +65,7 @@ const SoundManager = {
       osc.start();
       osc.stop(this.ctx.currentTime + duration);
     } catch (e) {
-      console.warn("Audio context not ready yet:", e);
+      console.warn("Audio context beep failed:", e);
     }
   },
 
@@ -373,10 +385,26 @@ document.addEventListener('DOMContentLoaded', () => {
   WindowManager.init();
 
   // Initialize Sub-Modules
-  if (typeof RetroTools !== 'undefined') RetroTools.init();
-  if (typeof TrashMail !== 'undefined') TrashMail.init();
-  if (typeof TwoFA !== 'undefined') TwoFA.init();
-  if (typeof LinkList !== 'undefined') LinkList.init();
+  try {
+    if (typeof RetroTools !== 'undefined') RetroTools.init();
+  } catch (e) {
+    console.error("Failed to initialize RetroTools:", e);
+  }
+  try {
+    if (typeof TrashMail !== 'undefined') TrashMail.init();
+  } catch (e) {
+    console.error("Failed to initialize TrashMail:", e);
+  }
+  try {
+    if (typeof TwoFA !== 'undefined') TwoFA.init();
+  } catch (e) {
+    console.error("Failed to initialize TwoFA:", e);
+  }
+  try {
+    if (typeof LinkList !== 'undefined') LinkList.init();
+  } catch (e) {
+    console.error("Failed to initialize LinkList:", e);
+  }
 
   // Boot Trigger
   let bootCompleted = false;
