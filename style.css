@@ -327,6 +327,7 @@ body.theme-classic .shortcut:hover {
 .icon-specs { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23008000"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>'); }
 .icon-help { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23808080"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>'); }
 .icon-2fa { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000080"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>'); }
+.icon-linklist { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000080"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>'); }
 
 /* Shortcut color overrides for neon themes */
 body.theme-amber .shortcut-icon { filter: sepia(1) saturate(5) hue-rotate(10deg); }
@@ -411,6 +412,7 @@ body.theme-classic .shortcut-label {
 .icon-specs-sm { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>'); }
 .icon-help-sm { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>'); }
 .icon-2fa-sm { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>'); }
+.icon-linklist-sm { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>'); }
 
 .window-controls {
   display: flex;
@@ -1644,4 +1646,150 @@ body.theme-classic .otp-code-display {
 
 body.theme-classic .otp-progress-bar-fill {
   background-color: #008000;
+}
+
+/* --- LINK LIST SPECIFIC STYLES --- */
+.links-actions-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.links-content-container {
+  flex: 1;
+  overflow-y: auto;
+  border: 2px inset var(--win-border-light);
+  background: var(--win-bg-dark);
+  padding: 10px;
+}
+
+/* Grid Layout for Links */
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+/* Retro Link Card style */
+.link-card {
+  display: block;
+  text-decoration: none;
+  color: var(--win-text) !important;
+  padding: 10px 12px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.link-card:active {
+  box-shadow: inset 1px 1px 0px var(--win-border-dark), 
+              inset -1px -1px 0px var(--win-border-light);
+}
+
+.link-card-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.link-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+  border: 1px solid var(--win-border-light);
+  padding: 2px;
+  background: #ffffff;
+}
+
+.link-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-align: left;
+}
+
+.link-title {
+  font-weight: bold;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.link-url-text {
+  font-size: 10px;
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Settings Layout split */
+.links-settings-split {
+  display: flex;
+  gap: 15px;
+  height: calc(100% - 35px);
+  overflow: hidden;
+}
+
+.links-settings-form {
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.links-settings-list-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.links-settings-list {
+  flex: 1;
+  overflow-y: auto;
+  border: 2px inset var(--win-border-light);
+  background: var(--win-bg-dark);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.links-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px;
+  border: 1px solid var(--win-border-light);
+  background: var(--win-bg);
+}
+
+.links-row-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.links-row-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.retro-error-box {
+  background: rgba(255, 0, 0, 0.15);
+  border: 1px solid #ff3333;
+  color: #ff5555;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+body.theme-classic .retro-error-box {
+  background: #ffc0c0;
+  color: #800000;
+  border: 2px solid #800000;
 }

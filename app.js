@@ -376,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof RetroTools !== 'undefined') RetroTools.init();
   if (typeof TrashMail !== 'undefined') TrashMail.init();
   if (typeof TwoFA !== 'undefined') TwoFA.init();
+  if (typeof LinkList !== 'undefined') LinkList.init();
 
   // Boot Trigger
   let bootCompleted = false;

@@ -110,6 +110,11 @@
             <span class="shortcut-label">2FA Authenticator</span>
           </div>
 
+          <div class="shortcut" data-window="win-links">
+            <div class="shortcut-icon icon-linklist"></div>
+            <span class="shortcut-label">Link List</span>
+          </div>
+
         </div>
 
         <!-- Floating Windows -->
@@ -469,6 +474,92 @@
           </div>
         </div>
 
+        <!-- Window: Link List -->
+        <div id="win-links" class="window hidden" style="width: 580px; height: 460px; left: 22%; top: 12%;">
+          <div class="window-header">
+            <div class="window-title">
+              <span class="win-title-icon icon-linklist-sm"></span>
+              <span>Link List v1.0</span>
+            </div>
+            <div class="window-controls">
+              <button class="win-btn win-min" data-action="minimize">_</button>
+              <button class="win-btn win-max" data-action="maximize">🗖</button>
+              <button class="win-btn win-close" data-action="close">×</button>
+            </div>
+          </div>
+          <div class="window-body window-split">
+            
+            <!-- Panel: Main Link List View -->
+            <div id="links-panel-main" class="tab-panel">
+              <div class="links-actions-bar">
+                <button id="btn-links-sync" class="retro-btn">🔄 Refresh</button>
+                <button id="btn-links-settings" class="retro-btn" style="margin-left: auto;">⚙️ Settings</button>
+              </div>
+              <div class="links-content-container" id="links-container">
+                <!-- Clickable link grid/cards will be rendered here -->
+              </div>
+            </div>
+
+            <!-- Panel: Password Gate -->
+            <div id="links-panel-gate" class="tab-panel hidden">
+              <div class="gate-container text-center" style="padding: 40px 10px;">
+                <p class="retro-label" style="margin-bottom: 12px;">Enter settings password to manage links:</p>
+                <input type="password" id="links-password-input" class="retro-input" style="width: 220px; margin-bottom: 15px;" placeholder="Password">
+                <br>
+                <button id="btn-links-unlock" class="retro-btn btn-primary" style="width: 100px; margin-right: 8px;">Unlock</button>
+                <button class="retro-btn" onclick="LinkList.lockSettings()" style="width: 100px;">Cancel</button>
+              </div>
+            </div>
+
+            <!-- Panel: Settings & Management (CRUD) -->
+            <div id="links-panel-settings" class="tab-panel hidden">
+              <div class="links-actions-bar">
+                <span class="retro-label font-bold">Manage Links</span>
+                <button id="btn-links-exit-settings" class="retro-btn btn-primary" style="margin-left: auto;">↩ Exit Settings</button>
+              </div>
+              
+              <div class="links-settings-split">
+                <!-- Left: Form to Add/Edit -->
+                <div class="links-settings-form">
+                  <div class="form-group">
+                    <label class="retro-label">Link Title:</label>
+                    <input type="text" id="link-form-name" class="retro-input" placeholder="e.g. Google">
+                  </div>
+                  <div class="form-group">
+                    <label class="retro-label">URL:</label>
+                    <input type="text" id="link-form-url" class="retro-input" placeholder="e.g. google.com">
+                  </div>
+                  <div class="action-row" style="margin-top: 10px;">
+                    <button id="btn-links-save-link" class="retro-btn btn-primary" style="width: 100%;">Add Link</button>
+                    <button id="btn-links-cancel-edit" class="retro-btn hidden" style="width: 100%; margin-top: 5px;">Cancel Edit</button>
+                  </div>
+                  
+                  <hr style="margin: 15px 0; border: 0; border-top: 2px dashed var(--win-border-light);">
+                  
+                  <!-- Sheets URL setup for Links -->
+                  <div class="form-group">
+                    <label class="retro-label">Google Sheets URL:</label>
+                    <input type="text" id="links-sheets-url-input" class="retro-input" style="font-size: 10px;" placeholder="https://script.google.com/macros/s/.../exec">
+                  </div>
+                  <button id="btn-links-save-setup" class="retro-btn" style="width: 100%;">Save Sheets URL</button>
+                </div>
+
+                <!-- Right: List of Links for Editing/Deletion -->
+                <div class="links-settings-list-container">
+                  <span class="retro-label" style="display: block; margin-bottom: 5px;">All Links:</span>
+                  <div id="links-settings-list" class="links-settings-list font-mono">
+                    <!-- Loaded dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="window-statusbar">
+            <span id="links-status-text">Link List Ready</span>
+          </div>
+        </div>
+
         <!-- Dialog Window: Sheets Config -->
         <div id="win-sheets-config" class="window hidden dialog-window" style="width: 420px; height: 260px; left: 35%; top: 30%;">
           <div class="window-header">
@@ -593,6 +684,10 @@
                 <span class="start-icon icon-2fa-sm"></span>
                 <span>2FA Authenticator</span>
               </div>
+              <div class="start-item" data-window="win-links">
+                <span class="start-icon icon-linklist-sm"></span>
+                <span>Link List</span>
+              </div>
 
               <hr class="start-divider">
               <div class="start-item" id="start-restart">
@@ -644,6 +739,7 @@
   <script src="js/tools.js"></script>
   <script src="js/mail.js"></script>
   <script src="js/2fa.js"></script>
+  <script src="js/links.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
