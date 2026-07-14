@@ -3,7 +3,7 @@ const TwoFA = {
   publicKeys: [],
   privateKeys: [],
   privateUnlocked: false,
-  sheetsUrl: 'https://script.google.com/macros/s/AKfycbwb9OO8r9QSrNiJGMy_JwJ4qIni7KEvVRS0HFHXMsFg32cqXkGN4QRDnXjV66RXWVfN/exec',
+  sheetsUrl: 'https://script.google.com/macros/s/AKfycby6ZBLR1j2kE_dwe6pMHkXGnwUC-SWf3l3VCAaPumvk_SmXCdmoSyTko1pA09XvcVtB/exec',
   isAddingPrivate: false,
   timerInterval: null,
   latestCodes: {},
@@ -26,7 +26,7 @@ const TwoFA = {
     }
 
     // 2. Load Google Sheets URL
-    this.sheetsUrl = localStorage.getItem('azera-2fa-sheets-url') || 'https://script.google.com/macros/s/AKfycbwb9OO8r9QSrNiJGMy_JwJ4qIni7KEvVRS0HFHXMsFg32cqXkGN4QRDnXjV66RXWVfN/exec';
+    this.sheetsUrl = localStorage.getItem('azera-2fa-sheets-url') || 'https://script.google.com/macros/s/AKfycby6ZBLR1j2kE_dwe6pMHkXGnwUC-SWf3l3VCAaPumvk_SmXCdmoSyTko1pA09XvcVtB/exec';
     document.getElementById('sheets-url-input').value = this.sheetsUrl;
   },
 
